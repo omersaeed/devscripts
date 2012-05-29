@@ -6,10 +6,9 @@
 cd ..
 
 if [ "$1" == 'clean' ]; then
-    cacheClean=1
+	npm cache clean
 fi
 
-cacheClean=0
 gatewayHome="/d/Projects/StoredIQ/svn/siq_repo/gateway"
 projRPath="../../../git/omersaeed/"
  
@@ -40,11 +39,6 @@ function setup  {
 	rm -rf *
 	mv ../models .
 	cd -
-
-	#do npm clean
-	if [ $cacheClean -eq 1 ]; then
-		npm cache clean
-	fi
 
 	# Setup gateway
 	cd $gatewayHome
