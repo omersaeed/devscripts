@@ -1,0 +1,77 @@
+#!/bin/bash
+#
+# Shell script to reset the environment after a code get and perform all the install steps
+# $1 would identify cacheClean mode. if clean  then clean cache otherwise assume it to be a project name.
+
+cd ..
+
+if [ "$1" == 'clean' ]; then
+    cacheClean=1
+fi
+
+cacheClean=0
+gatewayHome="/d/Projects/StoredIQ/svn/siq_repo/gateway"
+projRPath="../../../git/omersaeed/"
+ 
+function setup  {
+	#Save folder context for later pop
+	dir=`pwd`
+	pushd $dir
+	
+	echo working project set to "$1"
+	cd $1
+	if [ $? -ne 0 ]; then
+		echo 'Error locating DAX, ensure that you are launching from the folder where dax is cloned'
+		exit 1
+	fi
+
+	#Make the base directories if not existing
+	mkdir static/components/models/explorers/1.0 &> /dev/null
+	mkdir static/components/models/security/1.0 &> /dev/null
+
+	# remove node modules/ they will be setup again
+	cd node_modules
+	rm -rf *
+	cd -
+
+	#remove dax static components
+	cd static/components
+	mv models ..
+	rm -rf *
+	mv ../models .
+	cd -
+
+	#do npm clean
+	if [ $cacheClean -eq 1 ]; then
+		npm cache clean
+	fi
+
+	# Setup gateway
+	cd $gatewayHome
+	if [ $? -ne 0 ]; then
+		echo 'Error locating Gateway Home, ensure that the variable is set up properly'
+		exit 1
+	fi
+	echo Baking bindings for /static/components/models/explorers/1.0
+	bake -m mesh.tasks mesh.javascript bundle=local.gateway.api.bundles.EXPLORERS_API version=[1,0] path=$projRPath$1"/static/components/models/explorers/1.0"
+	cd -
+
+	cd ../bastion
+	echo Baking bindings for /static/components/models/security/1.0
+	bake -m mesh.tasks mesh.javascript bundle=bastion.security.bundle version=[1,0] path="../"$1"/static/components/models/security/1.0"
+	cd -
+	
+	npm install
+	./node_modules/.bin/component build --templatepath $1"/templates" --staticpath static
+
+	popd
+}
+
+for i in "$@"
+do
+	if [ "$i" == 'clean' ]; then
+		echo $i
+	else
+		setup $i
+	fi
+done
