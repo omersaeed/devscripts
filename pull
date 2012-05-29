@@ -1,0 +1,99 @@
+#!/bin/bash
+#
+# Takes 3 parameters, 
+# 1st comma separated list of repos for which you want to pull code from "origin"
+# 2nd comma separated list of repos for which you want to pull code from "upstream"
+# 3rd relative path of gateway folder
+# You'll need to change value of variable "svnSiqRepoPath" to set path of gateway folder relative to git hub Root folder
+
+localRepos="bake, mesh, scheme, bastion, spire, auxl, dax, daft, bedrockjs, csi, gloss, lookandfeel, siq-vendor-js"
+upstreamRepos="bastion, spire, dax, auxl, daft"
+gitHubRootFolderPath=".." 
+svnSiqRepoPath="..\siq_repo\trunk\gateway"
+localUpdatedRepos=""
+upstreamUpdatedRepos=""
+
+if [ $1 ]; then localRepos="$1"; fi
+if [ $2 ]; then upstreamRepos="$2"; fi
+if [ $3 ]; then svnSiqRepoPath="$3"; fi
+
+cd $gitHubRootFolderPath
+pwd
+
+function quit  {
+	if [ "$2" ]; then echo "Error Message: $2"; fi
+	if [ "$localUpdatedRepos" != "" ]; then
+		echo -------------Repos updated locally-------------
+		echo $localUpdatedRepos
+		echo -----------------------------------------------
+	fi
+	if [ "$upstreamUpdatedRepos" != "" ]; then
+		echo ---------------Repos updated from upstream ----------------
+		echo You may want to push these changes to your local fork
+		echo $upstreamUpdatedRepos
+		echo -----------------------------------------------------------
+	fi
+	rm ~/tmp.txt
+	exit 0 
+}
+
+echo Updating Local Repos [$localRepos]
+
+arr=$(echo $localRepos | tr "," "\n")
+
+for x in $arr
+do
+	echo
+	echo Updating $x
+	cd $x
+	if [ $? -ne 0 ]; then quit 1; fi
+	
+	git pull > ~/tmp.txt
+	if [ $? -ne 0 ]; then
+		quit 1, "Unable to pull from $x"
+		
+	fi
+	cat ~/tmp.txt
+	
+	grep_output="$(grep "Already up-to-date." ~/tmp.txt)"
+	if [ -z "$grep_output" ]; then
+		localUpdatedRepos=${localUpdatedRepos}" ,"$x
+	fi
+	cd - &> /dev/null
+done
+
+echo -----------------------------------------------
+echo Updating Repos from upstream [$upstreamRepos]
+
+arr=$(echo $upstreamRepos | tr "," "\n")
+
+for x in $arr
+do
+	echo
+	echo Updating $x
+	cd $x
+	if [ $? -ne 0 ]; then quit 1; fi
+	
+	git fetch upstream
+	git merge upstream/master > ~/tmp.txt
+	if [ $? -ne 0 ]; then
+		quit 1,"Unable to fetch from $x"
+	fi
+	cat ~/tmp.txt	
+	
+	grep_output="$(grep "Already up-to-date." ~/tmp.txt)"
+	if [ -z "$grep_output" ]; then
+		upstreamUpdatedRepos=${upstreamUpdatedRepos}" ,""$x"
+	fi
+
+	cd - &> /dev/null
+done
+
+	echo
+	echo Updating Gateway
+	cd $svnSiqRepoPath	
+	if [ $? -ne 0 ]; then quit 1; fi
+	svn update
+	if [ $? -ne 0 ]; then
+		quit 1, "Unable to update gateway code."
+	fi
