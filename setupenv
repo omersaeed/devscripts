@@ -6,7 +6,14 @@
 cd ..
 
 if [ "$1" == 'clean' ]; then
-	npm cache clean
+	npm cache clean csi
+	npm cache clean gloss
+	npm cache clean siq-lookandfeel
+	npm cache clean siq-mesh
+	npm cache clean dax
+	npm cache clean auxl
+	npm cache clean siq-vendor-js
+	npm cache clean bedrockjs
 fi
 
 gatewayHome="/d/Projects/StoredIQ/svn/siq_repo/gateway"
@@ -27,7 +34,10 @@ function setup  {
 	#Make the base directories if not existing
 	mkdir static/components/models/explorers/1.0 &> /dev/null
 	mkdir static/components/models/security/1.0 &> /dev/null
-
+	if [ "$1" == 'daft' ]; then
+		mkdir static/components/models/infosets/1.0 &> /dev/null
+	fi
+	
 	# remove node modules/ they will be setup again
 	cd node_modules
 	rm -rf *
@@ -46,6 +56,7 @@ function setup  {
 		echo 'Error locating Gateway Home, ensure that the variable is set up properly'
 		exit 1
 	fi
+	
 	echo Baking bindings for /static/components/models/explorers/1.0
 	bake -m mesh.tasks mesh.javascript bundle=local.gateway.api.bundles.EXPLORERS_API version=[1,0] path=$projRPath$1"/static/components/models/explorers/1.0"
 	cd -
@@ -54,6 +65,13 @@ function setup  {
 	echo Baking bindings for /static/components/models/security/1.0
 	bake -m mesh.tasks mesh.javascript bundle=bastion.security.bundle version=[1,0] path="../"$1"/static/components/models/security/1.0"
 	cd -
+	
+	if [ "$1" == 'daft' ]; then
+		cd ../enamel
+		echo Baking bindings for /static/components/models/infosets/1.0
+		bake -m mesh.tasks mesh.javascript bundle=enamel.component.API version=[1,0] path="../"$1"/static/components/models/infosets/1.0"
+		cd -
+	fi
 	
 	npm install
 	./node_modules/.bin/component build --templatepath $1"/templates" --staticpath static

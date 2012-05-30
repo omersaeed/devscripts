@@ -6,7 +6,7 @@
 # 3rd relative path of gateway folder
 # You'll need to change value of variable "svnSiqRepoPath" to set path of gateway folder relative to git hub Root folder
 
-localRepos="bake, mesh, scheme, bastion, spire, auxl, dax, daft, bedrockjs, csi, gloss, lookandfeel, siq-vendor-js"
+localRepos="bake, mesh, scheme, bastion, spire, auxl, dax, daft, enamel, bedrockjs, csi, gloss, lookandfeel, siq-vendor-js"
 upstreamRepos="bastion, spire, dax, auxl, daft"
 gitHubRootFolderPath=".." 
 svnSiqRepoPath="..\siq_repo\trunk\gateway"
