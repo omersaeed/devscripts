@@ -3,8 +3,6 @@
 # Shell script to reset the environment after a code get and perform all the install steps
 # $1 would identify cacheClean mode. if clean  then clean cache otherwise assume it to be a project name.
 
-cd ..
-
 if [ "$1" == 'clean' ]; then
 	npm cache clean csi
 	npm cache clean gloss
