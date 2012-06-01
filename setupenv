@@ -14,8 +14,10 @@ if [ "$1" == 'clean' ]; then
 	npm cache clean bedrockjs
 fi
 
-gatewayHome="/d/Projects/StoredIQ/svn/siq_repo/gateway"
-projRPath="../../../git/"
+. myPaths.sh
+
+pushd .
+cd $gitHome
  
 function setup  {
 	#Save folder context for later pop
@@ -39,9 +41,7 @@ function setup  {
 	mkdir -p static/components &> /dev/null
 	cd static/components
 	if [ $? -ne 0 ]; then exit 1; fi
-	mv models ..
 	rm -rf *
-	mv ../models .
 	cd -
 
 	echo Baking bindings for /static/components/models/explorers/1.0
@@ -81,3 +81,5 @@ do
 		setup $i
 	fi
 done
+
+popd

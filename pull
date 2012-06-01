@@ -6,11 +6,14 @@
 # 3rd relative path of gateway folder
 # You'll need to change value of variable "svnSiqRepoPath" to set path of gateway folder relative to git hub Root folder
 
-localRepos="bake, mesh, scheme, bastion, spire, auxl, dax, daft, enamel, bedrockjs, csi, gloss, lookandfeel, siq-vendor-js"
-#upstreamRepos="bastion, spire, dax, auxl, daft"
-svnSiqRepoPath="../svn/siq_repo/gateway"
+. mypaths.sh
+
+pushd .
+cd $gitHome
+
 localUpdatedRepos=""
 upstreamUpdatedRepos=""
+
 
 if [ $1 ]; then localRepos="$1"; fi
 if [ $2 ]; then upstreamRepos="$2"; fi
@@ -25,6 +28,10 @@ function quit  {
 	for x in $localArr
 	do
 		if [ -f ~/tmppull$x.txt ]; then 
+			grep_output="$(grep "Already up-to-date." ~/tmppull$x.txt)"
+			if [ -z "$grep_output" ]; then
+				localUpdatedRepos=${localUpdatedRepos}" ,"$x
+			fi 
 			Echo -ne Pull result for $x:" "  
 			cat ~/tmppull$x.txt
 			rm ~/tmppull$x.txt
@@ -34,6 +41,10 @@ function quit  {
 	for x in $upstreamArr
 	do
 		if [ -f ~/tmpfetch$x.txt ]; then 
+			grep_output="$(grep "Already up-to-date." ~/tmpfetch$x.txt)"
+			if [ -z "$grep_output" ]; then
+				upstreamUpdatedRepos=${upstreamUpdatedRepos}" ,"$x
+			fi
 			Echo -ne Fetch result for $x:" "  
 			cat ~/tmpfetch$x.txt
 			rm ~/tmpfetch$x.txt
@@ -51,6 +62,8 @@ function quit  {
 		echo $upstreamUpdatedRepos
 		echo -----------------------------------------------------------
 	fi
+
+	popd
 	exit 0 
 }
 
@@ -59,28 +72,15 @@ echo Updating Local Repos [$localRepos]
 function pullProject {
 	cd $1
 	if [ $? -ne 0 ]; then quit; fi
-	
 	git pull &> ~/tmppull$1.txt 
-		
-	grep_output="$(grep "Already up-to-date." ~/tmppull$1.txt)"
-	if [ -z "$grep_output" ]; then
-		localUpdatedRepos=${localUpdatedRepos}" ,"$1
-	fi
 	cd - &> /dev/null
 }
 
 function fetchProject {
 	cd $1
 	if [ $? -ne 0 ]; then quit; fi
-	
 	git fetch upstream
 	git merge upstream/master &> ~/tmpfetch$1.txt
-	
-	grep_output="$(grep "Already up-to-date." ~/tmpfetch$1.txt)"
-	if [ -z "$grep_output" ]; then
-		upstreamUpdatedRepos=${upstreamUpdatedRepos}" ,""$1"
-	fi
-
 	cd - &> /dev/null
 }
 
