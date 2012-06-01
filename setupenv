@@ -15,7 +15,7 @@ if [ "$1" == 'clean' ]; then
 fi
 
 gatewayHome="/d/Projects/StoredIQ/svn/siq_repo/gateway"
-projRPath="../../git/omersaeed/"
+projRPath="../../../git/"
  
 function setup  {
 	#Save folder context for later pop
@@ -29,14 +29,14 @@ function setup  {
 	fi
 
 	# remove node modules/ they will be setup again
-	mkdir node_modules &> /dev/null
+	mkdir -p node_modules &> /dev/null
 	cd node_modules
 	if [ $? -ne 0 ]; then exit 1; fi
 	rm -rf *
 	cd -
 
 	#remove static components
-	mkdir static/components &> /dev/null
+	mkdir -p static/components &> /dev/null
 	cd static/components
 	if [ $? -ne 0 ]; then exit 1; fi
 	mv models ..
@@ -44,27 +44,25 @@ function setup  {
 	mv ../models .
 	cd -
 
-	# Setup gateway
+	echo Baking bindings for /static/components/models/explorers/1.0
+	mkdir -p static/components/models/explorers/1.0 &> /dev/null
 	cd $gatewayHome
 	if [ $? -ne 0 ]; then exit 1; fi
-	
-	echo Baking bindings for /static/components/models/explorers/1.0
-	mkdir static/components/models/explorers/1.0 &> /dev/null
 	bake -m mesh.tasks mesh.javascript bundle=local.gateway.api.bundles.EXPLORERS_API version=[1,0] path=$projRPath$1"/static/components/models/explorers/1.0"
 	cd -
 
+	echo Baking bindings for /static/components/models/security/1.0
+	mkdir -p static/components/models/security/1.0 &> /dev/null
 	cd ../bastion
 	if [ $? -ne 0 ]; then exit 1; fi
-	mkdir static/components/models/security/1.0 &> /dev/null
-	echo Baking bindings for /static/components/models/security/1.0
 	bake -m mesh.tasks mesh.javascript bundle=bastion.security.bundle version=[1,0] path="../"$1"/static/components/models/security/1.0"
 	cd -
 	
 	if [ "$1" == 'daft' ]; then
+		echo Baking bindings for /static/components/models/infosets/1.0
+		mkdir -p static/components/models/infosets/1.0 &> /dev/null
 		cd ../enamel
 		if [ $? -ne 0 ]; then exit 1; fi
-		echo Baking bindings for /static/components/models/infosets/1.0
-		mkdir static/components/models/infosets/1.0 &> /dev/null
 		bake -m mesh.tasks mesh.javascript bundle=enamel.component.API version=[1,0] path="../"$1"/static/components/models/infosets/1.0"
 		cd -
 	fi
