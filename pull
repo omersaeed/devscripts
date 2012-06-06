@@ -8,7 +8,7 @@
 
 . mypaths.sh
 
-pushd .
+pushd . > /dev/null
 cd $gitHome
 
 localUpdatedRepos=""
@@ -28,9 +28,14 @@ function quit  {
 	for x in $localArr
 	do
 		if [ -f ~/tmppull$x.txt ]; then 
-			grep_output="$(grep "Already up-to-date." ~/tmppull$x.txt)"
-			if [ -z "$grep_output" ]; then
-				localUpdatedRepos=${localUpdatedRepos}" ,"$x
+			grep -q "Already up-to-date." ~/tmppull$x.txt
+			if [ $? -ne 0 ]; then
+				grep -wq "warning:\|error:\|fatal:" ~/tmppull$x.txt
+				if [ $? -eq 0 ]; then
+					localFailedRepos=${localFailedRepos}" ,"$x
+				else
+					localUpdatedRepos=${localUpdatedRepos}" ,"$x
+				fi
 			fi 
 			Echo -ne Pull result for $x:" "  
 			cat ~/tmppull$x.txt
@@ -41,9 +46,14 @@ function quit  {
 	for x in $upstreamArr
 	do
 		if [ -f ~/tmpfetch$x.txt ]; then 
-			grep_output="$(grep "Already up-to-date." ~/tmpfetch$x.txt)"
-			if [ -z "$grep_output" ]; then
-				upstreamUpdatedRepos=${upstreamUpdatedRepos}" ,"$x
+			grep -q "Already up-to-date." ~/tmpfetch$x.txt
+			if [ $? -ne 0 ]; then
+				grep -wq "warning:\|error:\|fatal:" ~/tmpfetch$x.txt
+				if [ $? -eq 0 ]; then
+					upstreamFailedRepos=${upstreamFailedRepos}" ,"$x
+				else
+					upstreamUpdatedRepos=${upstreamUpdatedRepos}" ,"$x
+				fi
 			fi
 			Echo -ne Fetch result for $x:" "  
 			cat ~/tmpfetch$x.txt
@@ -52,18 +62,19 @@ function quit  {
 	done
 
 	if [ "$localUpdatedRepos" != "" ]; then
-		echo -------------Repos updated locally-------------
-		echo $localUpdatedRepos
-		echo -----------------------------------------------
+		echo -e "\033[32;3;140mLocal Repos Updated $localUpdatedRepos"
+	fi
+	if [ "$localFailedRepos" != "" ]; then
+		echo -e "\033[31;3;140mLocal Repos FAILED  $localFailedRepos"
 	fi
 	if [ "$upstreamUpdatedRepos" != "" ]; then
-		echo ---------------Repos updated from upstream ----------------
-		echo You may want to push these changes to your local fork
-		echo $upstreamUpdatedRepos
-		echo -----------------------------------------------------------
+		echo -e "\033[32;3;140mUpstream Repos Updated $upstreamUpdatedRepos"
+	fi
+	if [ "$upstreamFailedRepos" != "" ]; then
+		echo -e "\033[31;3;140mUpstream Repos FAILED $upstreamFailedRepos"
 	fi
 
-	popd
+	popd > /dev/null
 	exit 0 
 }
 
