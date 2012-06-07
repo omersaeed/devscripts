@@ -58,12 +58,12 @@ function setup  {
 	bake -m mesh.tasks mesh.javascript bundle=bastion.security.bundle version=[1,0] path="../"$1"/static/components/models/security/1.0"
 	cd -
 	
-	if [ "$1" == 'daft' ]; then
-		echo Baking bindings for /static/components/models/infosets/1.0
+	if [ "$1" == 'daft' ]; then		
+		echo Baking bindings for /static/components/models/enamel/1.0
 		mkdir -p static/components/models/infosets/1.0 &> /dev/null
 		cd ../enamel
 		if [ $? -ne 0 ]; then exit 1; fi
-		bake -m mesh.tasks mesh.javascript bundle=enamel.component.API version=[1,0] path="../"$1"/static/components/models/infosets/1.0"
+		bake -m mesh.tasks mesh.javascript bundle=enamel.component.API version=[1,0] path="../"$1"/static/components/models/enamel/1.0"
 		cd -
 	fi
 	
