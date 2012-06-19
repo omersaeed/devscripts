@@ -49,6 +49,9 @@ function setup  {
 	cd $gatewayHome
 	if [ $? -ne 0 ]; then exit 1; fi
 	bake -m mesh.tasks mesh.javascript bundle=local.gateway.api.bundles.EXPLORERS_API version=[1,0] path=$projRPath$1"/static/components/models/explorers/1.0"
+
+	echo Baking bindings for /static/components/models/gateway/1.0
+	bake -m mesh.tasks mesh.javascript bundle=gateway.api.bundles.GATEWAY_API version=[1,0] path=$projRPath$1"/static/components/models/gateway/1.0"
 	cd -
 
 	echo Baking bindings for /static/components/models/security/1.0
@@ -64,7 +67,7 @@ function setup  {
 	if [ $? -ne 0 ]; then exit 1; fi
 	bake -m mesh.tasks mesh.javascript bundle=enamel.API version=[1,0] path="../"$1"/static/components/models/enamel/1.0"
 	cd -
-	
+			
 	npm install
 	echo $2
 	
