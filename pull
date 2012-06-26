@@ -91,7 +91,11 @@ function fetchProject {
 	cd $1
 	if [ $? -ne 0 ]; then quit; fi
 	git fetch upstream
-	git merge upstream/master &> ~/tmpfetch$1.txt
+
+	git checkout master &> ~/tmpfetch$1.txt
+	if [ $? -eq 0 ]; then
+		git merge upstream/master &> ~/tmpfetch$1.txt
+	fi
 	cd - &> /dev/null
 }
 
