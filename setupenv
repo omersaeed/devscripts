@@ -69,10 +69,25 @@ function setup  {
 	cd -
 			
 	npm install
-	echo $2
 	
 	./node_modules/.bin/component build --templatepath $1"/templates" --staticpath static  --baseurl=$2
 
+	#replace strings.yaml and styles.css from the local lookandfeel
+	cd ../lookandfeel/src
+	lessc style.less > style.css
+	cd -
+
+	cd ./node_modules/siq-lookandfeel
+	if [ $? -ne 0 ]; then exit 1; fi
+    rm strings.yaml
+	cmd //c "mklink strings.yaml ..\..\..\lookandfeel\strings.yaml"
+	cd -
+	cd node_modules/siq-lookandfeel/src
+    if [ $? -ne 0 ]; then exit 1; fi
+	rm style.css
+	cmd //c "mklink style.css ..\..\..\..\lookandfeel\src\style.css"
+	cd -
+	
 	popd
 }
 
@@ -89,5 +104,6 @@ do
 		setup $i $baseurl
 	fi
 done
+
 
 popd

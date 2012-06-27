@@ -1,0 +1,28 @@
+#!/bin/bash
+#
+# Shell script to regenerate the stylesheet
+
+. myPaths.sh
+
+pushd .
+
+cd $gitHome
+
+echo Generating CSS
+cd lookandfeel/src
+lessc style.less > style.css
+cd -
+
+echo Generating strings
+cd daft
+cp ../lookandfeel/strings.yaml ./node_modules/siq-lookandfeel
+cp ../lookandfeel/src/style.css ./static/components/lookandfeel
+./node_modules/.bin/component build --templatepath daft/templates --staticpath static --baseurl=//static
+cd -
+
+cd dax
+cp ../lookandfeel/strings.yaml ./node_modules/siq-lookandfeel
+./node_modules/.bin/component build --templatepath dax/templates --staticpath static --baseurl=//static
+cd -
+
+popd
