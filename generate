@@ -16,13 +16,14 @@ cd -
 echo Generating strings
 cd daft
 cp ../lookandfeel/strings.yaml ./node_modules/siq-lookandfeel
-cp ../lookandfeel/src/style.css ./static/components/lookandfeel
 ./node_modules/.bin/component build --templatepath daft/templates --staticpath static --baseurl=//static
+cp ../lookandfeel/src/style.css ./static/components/lookandfeel
 cd -
 
 cd dax
 cp ../lookandfeel/strings.yaml ./node_modules/siq-lookandfeel
 ./node_modules/.bin/component build --templatepath dax/templates --staticpath static --baseurl=//static
+cp ../lookandfeel/src/style.css ./static/components/lookandfeel
 cd -
 
 popd
