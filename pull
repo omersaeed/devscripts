@@ -46,7 +46,7 @@ function quit  {
 	for x in $upstreamArr
 	do
 		if [ -f ~/tmpfetch$x.txt ]; then 
-			grep -q "Already up-to-date." ~/tmpfetch$x.txt
+			grep -q "Already up-to-date.\|Switched to branch" ~/tmpfetch$x.txt
 			if [ $? -ne 0 ]; then
 				grep -wq "warning:\|error:\|fatal:" ~/tmpfetch$x.txt
 				if [ $? -eq 0 ]; then
@@ -99,7 +99,7 @@ function fetchProject {
 	
 	if [ $branch_name != 'master' ]; then
 		echo Switching to master branch, current branch $branch_name
-		git checkout master	2> ~/tmpfetch$1.txt
+		git checkout master	&> ~/tmpfetch$1.txt
 		if [ $? -ne 0 ]; then 
 			cd - &> /dev/null
 			return; 
@@ -110,7 +110,7 @@ function fetchProject {
 
 	if [ $branch_name != 'master' ]; then
 		echo Switching back to $branch_name
-		git checkout "$branch_name"	2> ~/tmpfetch$1.txt
+		git checkout "$branch_name"	2>> ~/tmpfetch$1.txt
 	fi
 	
 	cd - &> /dev/null
