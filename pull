@@ -91,7 +91,28 @@ function fetchProject {
 	cd $1
 	if [ $? -ne 0 ]; then quit; fi
 	git fetch upstream
+
+	# to find out existing branch name
+	branch_name=$(git symbolic-ref -q HEAD)
+	branch_name=${branch_name##refs/heads/}
+	branch_name=${branch_name:-HEAD}
+	
+	if [ $branch_name != 'master' ]; then
+		echo Switching to master branch, current branch $branch_name
+		git checkout master	2> ~/tmpfetch$1.txt
+		if [ $? -ne 0 ]; then 
+			cd - &> /dev/null
+			return; 
+		fi
+	fi
+	
 	git merge upstream/master &> ~/tmpfetch$1.txt
+
+	if [ $branch_name != 'master' ]; then
+		echo Switching back to $branch_name
+		git checkout "$branch_name"	2> ~/tmpfetch$1.txt
+	fi
+	
 	cd - &> /dev/null
 }
 
