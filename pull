@@ -46,13 +46,16 @@ function quit  {
 	for x in $upstreamArr
 	do
 		if [ -f ~/tmpfetch$x.txt ]; then 
-			grep -q "Already up-to-date.\|Switched to branch" ~/tmpfetch$x.txt
+			grep -q "Already up-to-date." ~/tmpfetch$x.txt
 			if [ $? -ne 0 ]; then
 				grep -wq "warning:\|error:\|fatal:" ~/tmpfetch$x.txt
 				if [ $? -eq 0 ]; then
 					upstreamFailedRepos=${upstreamFailedRepos}" ,"$x
 				else
-					upstreamUpdatedRepos=${upstreamUpdatedRepos}" ,"$x
+					grep -wq "Fetch result for" ~/tmpfetch$x.txt
+					if [ $? -ne 0 ]; then
+						upstreamUpdatedRepos=${upstreamUpdatedRepos}" ,"$x
+					fi 
 				fi
 			fi
 			Echo -ne Fetch result for $x:" "  
