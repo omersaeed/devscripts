@@ -2,7 +2,7 @@
 
 localRepos="bake, mesh, scheme, bastion, spire, auxl, dax, daft, enamel, bedrockjs, csi, gloss, lookandfeel, siq-vendor-js, glad"
 upstreamRepos=""
-#upstreamRepos="bastion, spire, dax, auxl, daft"
+#upstreamRepos="bastion, spire, dax, auxl, daft, gloss, siq-vendor-js, glad"
 
 
 gitHome="/d/Projects/StoredIQ/git"
