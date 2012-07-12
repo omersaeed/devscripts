@@ -26,4 +26,10 @@ cp ../lookandfeel/strings.yaml ./node_modules/siq-lookandfeel
 cp ../lookandfeel/src/style.css ./static/components/lookandfeel
 cd -
 
+cd glad
+cp ../lookandfeel/strings.yaml ./node_modules/siq-lookandfeel
+./node_modules/.bin/component build --templatepath glad/templates --staticpath static --baseurl=//static
+cp ../lookandfeel/src/style.css ./static/components/lookandfeel
+cd -
+
 popd
