@@ -86,6 +86,11 @@ echo Updating Local Repos [$localRepos]
 function pullProject {
 	cd $1
 	if [ $? -ne 0 ]; then quit; fi
+	
+	if [ "$1" == 'lookandfeel' ]; then
+		git checkout src/style.css
+	fi
+	
 	git pull &> ~/tmppull$1.txt 
 	cd - &> /dev/null
 }
