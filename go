@@ -1,0 +1,2 @@
+pull
+setupenv clean daft

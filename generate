@@ -30,7 +30,6 @@ cd -
 
 cd glad
 cp ../lookandfeel/strings.yaml ./node_modules/siq-lookandfeel
-rm -rf static/components/glad/
 ./node_modules/.bin/component build --templatepath glad/templates --staticpath static --baseurl=//static
 cp ../lookandfeel/src/style.css ./static/components/lookandfeel
 cp -rf ../lookandfeel/src/img/* ./static/components/lookandfeel/img
