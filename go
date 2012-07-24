@@ -1,2 +1,2 @@
 pull
-setupenv clean daft
+setupenv clean daft dax glad
