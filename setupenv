@@ -18,7 +18,7 @@ fi
 
 pushd .
 cd $gitHome
- 
+
 function setup  {
 	#Save folder context for later pop
 	pushd .
@@ -34,6 +34,8 @@ function setup  {
 	mkdir -p node_modules &> /dev/null
 	cd node_modules
 	if [ $? -ne 0 ]; then exit 1; fi
+	#failsafe to remove mklinked folders without removing source content.
+	rmdir * &> /dev/null
 	rm -rf *
 	cd -
 
@@ -43,6 +45,8 @@ function setup  {
 	if [ $? -ne 0 ]; then exit 1; fi
 	
 	# remove all but the linked directory
+	#failsafe to remove mklinked folders without removing source content.
+	rmdir $(ls | grep -v $1) &> /dev/null
 	rm -rf $(ls | grep -v $1)
 	cd -
 
