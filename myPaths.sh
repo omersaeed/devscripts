@@ -2,7 +2,7 @@
 
 localRepos="bake, mesh, scheme, bastion, spire, auxl, dax, daft, enamel, bedrockjs, csi, gloss, lookandfeel, siq-vendor-js, glad"
 upstreamRepos=""
-#upstreamRepos="bastion, spire, dax, auxl, daft, gloss, siq-vendor-js, glad"
+#upstreamRepos="bastion, spire, dax, auxl, daft, gloss, siq-vendor-js, glad, bedrockjs"
 
 
 gitHome="/d/Projects/StoredIQ/git"
@@ -13,3 +13,7 @@ projRPath="../../../git/"
 #This is the path of the svn siq_repo home relative to the git repo
 svnSiqRepoPath="../svn/siq_repo"
 
+#The folders that should be preserved (Environment specific)
+glad="gloss\|bedrock"
+daft="gloss\|bedrock"
+dax=""

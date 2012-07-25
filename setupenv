@@ -3,17 +3,6 @@
 # Shell script to reset the environment after a code get and perform all the install steps
 # $1 would identify cacheClean mode. if clean  then clean cache otherwise assume it to be a project name.
 
-if [ "$1" == 'clean' ]; then
-	npm cache clean csi
-	npm cache clean gloss
-	npm cache clean siq-lookandfeel
-	npm cache clean siq-mesh
-	npm cache clean dax
-	npm cache clean auxl
-	npm cache clean siq-vendor-js
-	npm cache clean bedrockjs
-fi
-
 . myPaths.sh
 
 pushd .
@@ -46,8 +35,8 @@ function setup  {
 	
 	# remove all but the linked directory
 	#failsafe to remove mklinked folders without removing source content.
-	rmdir $(ls | grep -v $1) &> /dev/null
-	rm -rf $(ls | grep -v $1)
+	rmdir $(ls | grep -v $2) &> /dev/null
+	rm -rf $(ls | grep -v $2)
 	cd -
 
 	echo Baking bindings for /static/components/models/security/1.0
@@ -101,9 +90,19 @@ function setup  {
 for i in "$@"
 do
 	if [ "$i" == 'clean' ]; then
-		echo $i
+		npm cache clean csi
+		npm cache clean gloss
+		npm cache clean siq-lookandfeel
+		npm cache clean siq-mesh
+		npm cache clean dax
+		npm cache clean auxl
+		npm cache clean siq-vendor-js
+		npm cache clean bedrockjs
 	else
-		setup $i
+		#eval is a plague. Must find a better way. Upgrading to bash 4 would help.
+		eval export value='$'$i
+		projects=$i"\|"$value
+		setup $i $projects
 	fi
 done
 
