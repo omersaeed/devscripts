@@ -115,7 +115,13 @@ function fetchProject {
 	fi
 	
 	git merge upstream/master &> ~/tmpfetch$1.txt
-
+	
+	if [ $? -ne 0 ]; then 
+		cd - &> /dev/null
+		return; 
+	fi
+	git push origin master 2>> ~/tmpfetch$1.txt
+	
 	if [ $branch_name != 'master' ]; then
 		echo Switching back to $branch_name
 		git checkout "$branch_name"	2>> ~/tmpfetch$1.txt
