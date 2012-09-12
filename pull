@@ -30,7 +30,7 @@ function quit  {
 		if [ -f ~/tmppull$x.txt ]; then 
 			grep -q "Already up-to-date." ~/tmppull$x.txt
 			if [ $? -ne 0 ]; then
-				grep -wq "warning:\|error:\|fatal:" ~/tmppull$x.txt
+				grep -wq "warning:\|error:\|fatal:\|failed;" ~/tmppull$x.txt
 				if [ $? -eq 0 ]; then
 					localFailedRepos=${localFailedRepos}" ,"$x
 				else
@@ -48,7 +48,7 @@ function quit  {
 		if [ -f ~/tmpfetch$x.txt ]; then 
 			grep -q "Already up-to-date." ~/tmpfetch$x.txt
 			if [ $? -ne 0 ]; then
-				grep -wq "warning:\|error:\|fatal:" ~/tmpfetch$x.txt
+				grep -wq "warning:\|error:\|fatal:\|failed;" ~/tmpfetch$x.txt
 				if [ $? -eq 0 ]; then
 					upstreamFailedRepos=${upstreamFailedRepos}" ,"$x
 				else
