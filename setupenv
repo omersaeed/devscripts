@@ -54,6 +54,14 @@ function setup  {
 		cd -
 	fi
 
+	if [ "$1" == 'dax' -o "$1" == 'daft' -o "$1" == 'glad' ]; then
+		echo Baking bindings for /static/components/models/users/1.0
+		mkdir -p static/components/models/users/1.0 &> /dev/null
+		cd ../bastion
+		if [ $? -ne 0 ]; then exit 1; fi
+		bake -m mesh.tasks mesh.javascript bundle=bastion.users.bundle version=[1,0] path="../"$1"/static/components/models/users/1.0"
+		cd -
+	fi
 	if [ "$1" == 'dax' -o "$1" == 'daft' ]; then
 		echo Baking bindings for /static/components/models/explorers/1.0
 		mkdir -p static/components/models/explorers/1.0 &> /dev/null
