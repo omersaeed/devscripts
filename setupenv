@@ -89,7 +89,7 @@ function setup  {
 		cd -
 	fi
 	
-	if [ "$1" == 'dax' -o "$1" == 'daft' ]; then
+	if [ "$1" == 'dax' -o "$1" == 'daft' -o "$1" == 'glad' ]; then
 		echo Baking bindings for /static/components/models/enamel/1.0
 		mkdir -p static/components/models/enamel/1.0 &> /dev/null
 		cd ../enamel

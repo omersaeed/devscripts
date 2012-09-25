@@ -1,2 +1,2 @@
 pull
-setupenv clean daft dax glad
+setupenv clean daft dax glad gloss
