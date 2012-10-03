@@ -11,6 +11,9 @@ cd $gitHome
 echo Generating CSS
 cd lookandfeel/src
 lessc style.less > style.css
+lessc dax.less > dax.css
+lessc daft.less > daft.css
+lessc glad.less > glad.css
 cd -
 
 echo Generating strings
