@@ -34,7 +34,10 @@ function quit  {
 				if [ $? -eq 0 ]; then
 					localFailedRepos=${localFailedRepos}" ,"$x
 				else
-					localUpdatedRepos=${localUpdatedRepos}" ,"$x
+					grep -wq "Pull result for" ~/tmppull$x.txt
+					if [ $? -ne 0 ]; then
+						localUpdatedRepos=${localUpdatedRepos}" ,"$x
+					fi
 				fi
 			fi 
 			Echo -ne Pull result for $x:" "  
@@ -91,6 +94,42 @@ function pullProject {
 		git checkout src/*.css
 	fi
 	
+	rm ~/tmppull$1.txt &> /dev/null
+
+	# to find out existing branch name
+#	branch_name=$(git symbolic-ref -q HEAD)
+#	branch_name=${branch_name##refs/heads/}
+#	branch_name=${branch_name:-HEAD}
+#		
+#	if [ $branch_name != 'master' ]; then
+#		echo Switching to master branch, current branch $branch_name
+#		git checkout master	>> ~/tmppull$1.txt 2>&1
+#		if [ $? -ne 0 ]; then 
+#			cd - &> /dev/null
+#			return; 
+#		fi
+#		
+#		git pull >> ~/tmppull$1.txt 2>&1 
+#		
+#		echo Switching back to $branch_name
+#		git checkout "$branch_name"	>> ~/tmppull$1.txt 2>&1
+#		if [ $? -ne 0 ]; then 
+#			cd - &> /dev/null
+#			return; 
+#		fi
+#	fi
+#	
+#	git pull >> ~/tmppull$1.txt 2>&1 
+#
+#	if [ $branch_name != 'master' ]; then	
+#		git merge master >> ~/tmppull$1.txt 2>&1
+#	
+#		if [ $? -ne 0 ]; then 
+#			cd - &> /dev/null
+#			return; 
+#		fi		
+#	fi
+
 	git pull &> ~/tmppull$1.txt 
 	cd - &> /dev/null
 }
