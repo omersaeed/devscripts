@@ -95,42 +95,43 @@ function pullProject {
 	fi
 	
 	rm ~/tmppull$1.txt &> /dev/null
-
+	touch ~/tmppull$1.txt
+	
 	# to find out existing branch name
-#	branch_name=$(git symbolic-ref -q HEAD)
-#	branch_name=${branch_name##refs/heads/}
-#	branch_name=${branch_name:-HEAD}
-#		
-#	if [ $branch_name != 'master' ]; then
-#		echo Switching to master branch, current branch $branch_name
-#		git checkout master	>> ~/tmppull$1.txt 2>&1
-#		if [ $? -ne 0 ]; then 
-#			cd - &> /dev/null
-#			return; 
-#		fi
-#		
-#		git pull >> ~/tmppull$1.txt 2>&1 
-#		
-#		echo Switching back to $branch_name
-#		git checkout "$branch_name"	>> ~/tmppull$1.txt 2>&1
-#		if [ $? -ne 0 ]; then 
-#			cd - &> /dev/null
-#			return; 
-#		fi
-#	fi
-#	
-#	git pull >> ~/tmppull$1.txt 2>&1 
-#
-#	if [ $branch_name != 'master' ]; then	
-#		git merge master >> ~/tmppull$1.txt 2>&1
-#	
-#		if [ $? -ne 0 ]; then 
-#			cd - &> /dev/null
-#			return; 
-#		fi		
-#	fi
+	branch_name=$(git symbolic-ref -q HEAD)
+	branch_name=${branch_name##refs/heads/}
+	branch_name=${branch_name:-HEAD}
+		
+	if [ $branch_name != 'master' ]; then
+		echo Switching to master branch, current branch $branch_name
+		git checkout master	>> ~/tmppull$1.txt 2>&1
+		if [ $? -ne 0 ]; then 
+			cd - &> /dev/null
+			return; 
+		fi
+		
+		git pull >> ~/tmppull$1.txt 2>&1 
+		
+		echo Switching back to $branch_name
+		git checkout "$branch_name"	>> ~/tmppull$1.txt 2>&1
+		if [ $? -ne 0 ]; then 
+			cd - &> /dev/null
+			return; 
+		fi
+	fi
+	
+	git pull >> ~/tmppull$1.txt 2>&1 
 
-	git pull &> ~/tmppull$1.txt 
+	if [ $branch_name != 'master' ]; then	
+		git merge master >> ~/tmppull$1.txt 2>&1
+	
+		if [ $? -ne 0 ]; then 
+			cd - &> /dev/null
+			return; 
+		fi		
+	fi
+
+	#git pull &> ~/tmppull$1.txt 
 	cd - &> /dev/null
 }
 
