@@ -28,19 +28,22 @@ function quit  {
 	for x in $localArr
 	do
 		if [ -f ~/tmppull$x.txt ]; then 
-			grep -q "Already up-to-date." ~/tmppull$x.txt
-			if [ $? -ne 0 ]; then
-				grep -wq "warning:\|error:\|fatal:\|failed;" ~/tmppull$x.txt
+#			grep -q "Already up-to-date." ~/tmppull$x.txt
+#			if [ $? -ne 0 ]; then
+			grep -wq "warning:\|error:\|fatal:\|failed;" ~/tmp*pull$x.txt
+			if [ $? -eq 0 ]; then
+				localFailedRepos=${localFailedRepos}" ,"$x
+			else
+				grep -wq "Updating" ~/tmp*pull$x.txt
 				if [ $? -eq 0 ]; then
-					localFailedRepos=${localFailedRepos}" ,"$x
-				else
-					grep -wq "Pull result for" ~/tmppull$x.txt
-					if [ $? -ne 0 ]; then
-						localUpdatedRepos=${localUpdatedRepos}" ,"$x
-					fi
+					localUpdatedRepos=${localUpdatedRepos}" ,"$x
 				fi
-			fi 
-			Echo -ne Pull result for $x:" "  
+			fi
+#			fi
+			
+			Echo -ne Pull result for $x:" "
+			cat ~/tmpmasterpull$x.txt
+			rm ~/tmpmasterpull$x.txt
 			cat ~/tmppull$x.txt
 			rm ~/tmppull$x.txt
 		fi
@@ -95,7 +98,9 @@ function pullProject {
 	fi
 	
 	rm ~/tmppull$1.txt &> /dev/null
+	rm ~/tmpmasterpull$1.txt &> /dev/null
 	touch ~/tmppull$1.txt
+	touch ~/tmpmasterpull$x.txt
 	
 	# to find out existing branch name
 	branch_name=$(git symbolic-ref -q HEAD)
@@ -103,24 +108,24 @@ function pullProject {
 	branch_name=${branch_name:-HEAD}
 		
 	if [ $branch_name != 'master' ]; then
-		echo Switching to master branch, current branch $branch_name
-		git checkout master	>> ~/tmppull$1.txt 2>&1
+		echo Switching $1 to master branch, current branch $branch_name
+		git checkout master	&> ~/tmpmasterpull$1.txt
 		if [ $? -ne 0 ]; then 
 			cd - &> /dev/null
 			return; 
 		fi
 		
-		git pull >> ~/tmppull$1.txt 2>&1 
+		git pull >> ~/tmpmasterpull$1.txt 2>&1 
 		
-		echo Switching back to $branch_name
-		git checkout "$branch_name"	>> ~/tmppull$1.txt 2>&1
+		echo Switching $1 back to $branch_name
+		git checkout "$branch_name"	>> ~/tmpmasterpull$1.txt 2>&1
 		if [ $? -ne 0 ]; then 
 			cd - &> /dev/null
 			return; 
 		fi
 	fi
 	
-	git pull >> ~/tmppull$1.txt 2>&1 
+	git pull &> ~/tmppull$1.txt 
 
 	if [ $branch_name != 'master' ]; then	
 		git merge master >> ~/tmppull$1.txt 2>&1
@@ -146,7 +151,7 @@ function fetchProject {
 	branch_name=${branch_name:-HEAD}
 	
 	if [ $branch_name != 'master' ]; then
-		echo Switching to master branch, current branch $branch_name
+		echo Switching $1 to master branch, current branch $branch_name
 		git checkout master	&> ~/tmpfetch$1.txt
 		if [ $? -ne 0 ]; then 
 			cd - &> /dev/null
@@ -163,7 +168,7 @@ function fetchProject {
 	git push origin master 2>> ~/tmpfetch$1.txt
 	
 	if [ $branch_name != 'master' ]; then
-		echo Switching back to $branch_name
+		echo Switching $1 back to $branch_name
 		git checkout "$branch_name"	2>> ~/tmpfetch$1.txt
 	fi
 	
