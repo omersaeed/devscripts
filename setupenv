@@ -45,56 +45,51 @@ function setup  {
 	rm -rf $(ls | grep -v $2)
 	cd -
 
+	mkdir -p static/components/models &> /dev/null
 	if [ "$1" == 'dax' -o "$1" == 'daft' -o "$1" == 'glad' ]; then
 		echo Baking bindings for /static/components/models/security/1.0
-		mkdir -p static/components/models/security/1.0 &> /dev/null
 		cd ../bastion
 		if [ $? -ne 0 ]; then exit 1; fi
-		bake -m mesh.tasks mesh.javascript bundle=bastion.security.bundle version=[1,0] path="../"$1"/static/components/models/security/1.0"
+		bake -m mesh.tasks mesh.javascript bundle=bastion.security.bundle version=[1,0] path="../"$1"/static/components/models"
 		cd -
 	fi
 
 	if [ "$1" == 'dax' -o "$1" == 'daft' -o "$1" == 'glad' ]; then
-		echo Baking bindings for /static/components/models/users/1.0
-		mkdir -p static/components/models/users/1.0 &> /dev/null
+		echo Baking bindings for /static/components/models
 		cd ../bastion
 		if [ $? -ne 0 ]; then exit 1; fi
-		bake -m mesh.tasks mesh.javascript bundle=bastion.users.bundle version=[1,0] path="../"$1"/static/components/models/users/1.0"
+		bake -m mesh.tasks mesh.javascript bundle=bastion.users.bundle version=[1,0] path="../"$1"/static/components/models"
 		cd -
 	fi
 	if [ "$1" == 'dax' -o "$1" == 'daft' ]; then
 		echo Baking bindings for /static/components/models/explorers/1.0
-		mkdir -p static/components/models/explorers/1.0 &> /dev/null
 		cd $gatewayHome
 		if [ $? -ne 0 ]; then exit 1; fi
-		bake -m mesh.tasks mesh.javascript bundle=local.gateway.api.bundles.EXPLORERS_API version=[1,0] path=$projRPath$1"/static/components/models/explorers/1.0"
+		bake -m mesh.tasks mesh.javascript bundle=local.gateway.api.bundles.EXPLORERS_API version=[1,0] path=$projRPath$1"/static/components/models"
 		cd -
 	fi
 
 	if [ "$1" == 'dax' -o "$1" == 'daft' ]; then
 		echo Baking bindings for /static/components/models/gateway/1.0
-		mkdir -p static/components/models/gateway/1.0 &> /dev/null
 		cd $gatewayHome
 		if [ $? -ne 0 ]; then exit 1; fi
-		bake -m mesh.tasks mesh.javascript bundle=gateway.api.bundles.GATEWAY_API version=[1,0] path=$projRPath$1"/static/components/models/gateway/1.0"
+		bake -m mesh.tasks mesh.javascript bundle=gateway.api.bundles.GATEWAY_API version=[1,0] path=$projRPath$1"/static/components/models"
 		cd -
 	fi
 	
 	if [ "$1" == 'glad' ]; then
 		echo Baking bindings for /static/components/models/administrative/1.0
-		mkdir -p static/components/models/administrative/1.0 &> /dev/null
 		cd $gatewayHome
 		if [ $? -ne 0 ]; then exit 1; fi
-		bake -m mesh.tasks mesh.javascript bundle=gateway.api.bundles.ADMINISTRATIVE_API version=[1,0] path=$projRPath$1"/static/components/models/administrative/1.0"
+		bake -m mesh.tasks mesh.javascript bundle=gateway.api.bundles.ADMINISTRATIVE_API version=[1,0] path=$projRPath$1"/static/components/models"
 		cd -
 	fi
 	
 	if [ "$1" == 'dax' -o "$1" == 'daft' -o "$1" == 'glad' ]; then
 		echo Baking bindings for /static/components/models/enamel/1.0
-		mkdir -p static/components/models/enamel/1.0 &> /dev/null
 		cd ../enamel
 		if [ $? -ne 0 ]; then exit 1; fi
-		bake -m mesh.tasks mesh.javascript bundle=enamel.API version=[1,0] path="../"$1"/static/components/models/enamel/1.0"
+		bake -m mesh.tasks mesh.javascript bundle=enamel.API version=[1,0] path="../"$1"/static/components/models"
 		cd -
 	fi
 	
